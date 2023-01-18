@@ -15,6 +15,21 @@ class _ProductScreenState extends State<ProductScreen> {
   TextEditingController _priceController = TextEditingController();
   TextEditingController _quantityController = TextEditingController();
 
+  List<Product> productList = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    ProductDBHelper.instance.getProductList().then((value){
+      setState(() {
+        productList = value;
+      });
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -25,7 +40,41 @@ class _ProductScreenState extends State<ProductScreen> {
       body: Center(
         child: Column(
           children: [
-
+            Expanded(
+              child: ListView.builder(
+                itemCount: productList.length,
+                itemBuilder: (BuildContext context, index){
+                  if(productList.isNotEmpty){
+                    return GestureDetector(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 3,
+                              spreadRadius: 3,
+                              color: Colors.grey.withOpacity(0.2)
+                            )
+                          ]
+                        ),
+                        child: ListTile(
+                          leading: Icon(Icons.all_inbox),
+                          title: Text('${productList[index].name}',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                          subtitle: Text('LKR ${productList[index].price}',
+                            style: TextStyle(fontSize: 15),),
+                        ),
+                      ),
+                    );
+                  }else{
+                    return Container(
+                      child: Center(child: Text('List is empty'),),
+                    );
+                  }
+                },
+              ),
+            )
           ],
         ),
       ),
@@ -52,10 +101,13 @@ class _ProductScreenState extends State<ProductScreen> {
 
         ProductDBHelper.instance.insertProduct(product).then((value){
           ProductDBHelper.instance.getProductList().then((value){
-
+            setState(() {
+              productList = value;
+            });
           });
 
           Navigator.pop(context);
+          _emptyTextFields();
         });
       }
     }, child: Text('Save'));
@@ -107,6 +159,11 @@ class _ProductScreenState extends State<ProductScreen> {
     showDialog(context: context, builder: (BuildContext context){
       return productDetailsBox;
     });
+  }
 
+  void _emptyTextFields(){
+    _nameController.text = '';
+    _priceController.text = '';
+    _quantityController.text ='';
   }
 }
