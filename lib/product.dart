@@ -1,14 +1,14 @@
 class Product{
 
-  int id;
-  String name;
-  String price;
-  int quantity;
+  int ? id;
+  String ? name;
+  String ? price;
+  int ? quantity;
 
-  Product({required this.id , required this.name , required this.price , required this.quantity});
+  Product({ this.id ,  this.name ,  this.price ,  this.quantity});
 
   // ==== From map ...... Map => Product Object
-  static Product fromMap(Map<String, dynamic>query){
+  static Product fromMap(Map<dynamic, dynamic>query){
     Product product = Product();
     product.id = query['id'];
     product.name = query['name'];
@@ -28,11 +28,12 @@ class Product{
   }
 
   // =========== From map List --------- Map List => Product List
-  static List<Product> fromList(List<Map<String, dynamic>> query){
+  static List<Product> fromMapList(List<Map<dynamic, dynamic>> query){
     List<Product> products = <Product>[];
     for(Map mp in query){
       products.add(fromMap(mp));
     }
     return products;
   }
+
 }
