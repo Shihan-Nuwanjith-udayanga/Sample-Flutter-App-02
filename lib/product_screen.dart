@@ -47,69 +47,72 @@ class _ProductScreenState extends State<ProductScreen> {
                   if (productList.isNotEmpty) {
                     return GestureDetector(
                       child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: 3,
-                                  spreadRadius: 3,
-                                  color: Colors.grey.withOpacity(0.2))
-                            ]),
-                        child: ListTile(
-                          leading: Icon(Icons.all_inbox),
-                          title: Text(
-                            '${productList[index].name}',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(
-                            'LKR ${productList[index].price}',
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          trailing: Container(
-                            width: 100,
-                            child: Wrap(
-                              direction: Axis.horizontal,
-                              children: [
-                                IconButton(
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                      setState(() {
-                                        _selectedProduct = productList[index];
-                                        showProductDialogBox(
-                                            context, InputType.UpdateProduct);
-                                      });
-                                    }),
-                                // =========== Delete Icon =============
-                                IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.red,
-                                    onPressed: () {
-                                      setState(() {
-                                        _selectedProduct = productList[index];
-                                      });
-                                      ProductDBHelper.instance.deleteProduct(_selectedProduct!).then((value){
-                                        ProductDBHelper.instance.getProductList().then((value) {
-                                          setState(() {
-                                            productList = value;
-                                          });
+                          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 3,
+                                spreadRadius: 3,
+                                color: Colors.grey.withOpacity(0.2))
+                          ]),
+                      child: ListTile(
+                        leading: Icon(Icons.all_inbox),
+                        title: Text(
+                          '${productList[index].name}',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          'LKR ${productList[index].price}',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                        trailing: Container(
+                          width: 100,
+                          child: Wrap(
+                            direction: Axis.horizontal,
+                            children: [
+                              IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedProduct = productList[index];
+                                      showProductDialogBox(
+                                          context, InputType.UpdateProduct);
+                                    });
+                                  }),
+                              // =========== Delete Icon =============
+                              IconButton(
+                                  icon: Icon(Icons.delete),
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedProduct = productList[index];
+                                    });
+                                    ProductDBHelper.instance.deleteProduct(
+                                        _selectedProduct!).then((value) {
+                                      ProductDBHelper.instance.getProductList()
+                                          .then((value) {
+                                        setState(() {
+                                          productList = value;
                                         });
                                       });
-                                    }),
-                              ],
-                            ),
+                                    });
+                                  }),
+                            ],
                           ),
                         ),
                       ),
-                    );
+                    ),
+                  );
                   } else {
-                    return Container(
-                      child: Center(
-                        child: Text('List is empty'),
-                      ),
-                    );
+                  return Container(
+                  child: Center(
+                  child: Text('List is empty'),
+                  ),
+                  );
                   }
                 },
               ),
@@ -119,6 +122,7 @@ class _ProductScreenState extends State<ProductScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          _emptyTextFields();
           showProductDialogBox(context, InputType.AddProduct);
         },
         child: Icon(Icons.add),
@@ -167,9 +171,11 @@ class _ProductScreenState extends State<ProductScreen> {
               setState(() {
                 _selectedProduct?.name = _nameController.text;
                 _selectedProduct?.price = _priceController.text;
-                _selectedProduct?.quantity = int.parse(_quantityController.text);
+                _selectedProduct?.quantity =
+                    int.parse(_quantityController.text);
 
-                ProductDBHelper.instance.updateProduct(_selectedProduct!).then((value) {
+                ProductDBHelper.instance.updateProduct(_selectedProduct!).then((
+                    value) {
                   ProductDBHelper.instance.getProductList().then((value) {
                     this.setState(() {
                       productList = value;
